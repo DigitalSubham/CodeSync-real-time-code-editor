@@ -39,6 +39,15 @@ io.on("connection", (socket) => {
     });
   });
 
+  //recieving code from client and sending to client
+  socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
+    socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code }); //send to every client  except me
+  });
+  //recieving code from client and sending to client
+  socket.on(ACTIONS.SYNC_Code, ({ socketId, code }) => {
+    io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code }); //send to every client  except me
+  });
+
   //agar client browser band ya kisi or page pe chala jata h to ye event trigger ho jata h
   socket.on("disconnecting", () => {
     const rooms = [...socket.rooms];

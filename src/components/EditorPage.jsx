@@ -14,7 +14,7 @@ import {
 
 const EditorPage = () => {
   const [clients, setClients] = useState([]);
-
+  const codeRef = useRef(null);
   const socketRef = useRef(null); //we are using useRef because when its value change component didn't rerender
   const location = useLocation();
   const { roomId } = useParams();
@@ -48,6 +48,10 @@ const EditorPage = () => {
             console.log(`${userName} has joined`);
           }
           setClients(clients);
+          socketRef.current.emit(ACTIONS.SYNC_Code, {
+            code: codeRef.current,
+            socketId,
+          });
         }
       );
 
@@ -68,6 +72,20 @@ const EditorPage = () => {
     };
   }, []);
 
+  async function copyRoomId() {
+    try {
+      await navigator.clipboard.writeText(roomId);
+      toast.success("Room ID copied to clipboard");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to copy to clipboard");
+    }
+  }
+
+  function leaveRoom() {
+    reactNavigate("/");
+  }
+
   return (
     <div className="mainWrap bg-[#1c1e29] grid grid-cols-[250px_minmax(900px,_1fr)_0px] h-screen  	">
       <div className="aside bg-[#1c1e29] border-r-[1px] border-white flex flex-col">
@@ -86,15 +104,27 @@ const EditorPage = () => {
             ))}
           </div>
         </div>
-        <button className="p-2 mb-2 rounded-md text-[16px] cursor-pointer transition-all duration-300 ease-in-out bg-white font-bold w-[90%] mx-auto  hover:bg-[#2b824c]">
+        <button
+          onClick={copyRoomId}
+          className="p-2 mb-2 rounded-md text-[16px] cursor-pointer transition-all duration-300 ease-in-out bg-white font-bold w-[90%] mx-auto  hover:bg-[#2b824c]"
+        >
           Copy Room ID
         </button>
-        <button className="p-2 rounded-md text-[16px] mb-2 cursor-pointer transition-all duration-300 ease-in-out bg-[#4aed88] font-bold w-[90%] mx-auto  hover:bg-[#2b824c]">
+        <button
+          onClick={leaveRoom}
+          className="p-2 rounded-md text-[16px] mb-2 cursor-pointer transition-all duration-300 ease-in-out bg-[#4aed88] font-bold w-[90%] mx-auto  hover:bg-[#2b824c]"
+        >
           Leave
         </button>
       </div>
       <div className="editorWrap  ">
-        <Editor />
+        <Editor
+          socketRef={socketRef}
+          roomId={roomId}
+          onCodeChange={(code) => {
+            codeRef.current = code;
+          }}
+        />
       </div>
     </div>
   );
