@@ -2,9 +2,10 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import ACTIONS from "./src/Actions.js";
+import "dotenv/config";
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.VITE_PORT || 4000;
 
 const server = createServer(app);
 const io = new Server(server);
@@ -39,13 +40,25 @@ io.on("connection", (socket) => {
     });
   });
 
-  //recieving code from client and sending to client
+  // Sending code changes to everyone except the sender
   socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
-    socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code }); //send to every client  except me
+    // Broadcasting the received code to all clients in the specified room except the sender
+    socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code });
+    // Note: 'socket.in(roomId)' targets all sockets in the room except the sender ('socket')
   });
-  //recieving code from client and sending to client
+
+  // Sending code changes to a specific client
   socket.on(ACTIONS.SYNC_Code, ({ socketId, code }) => {
-    io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code }); //send to every client  except me
+    // Sending the received code to a specific client identified by socketId
+    io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
+    // Note: 'io.to(socketId)' targets the socket with the specified socketId
+  });
+
+  // Sending output changes to everyone in the room, including the sender
+  socket.on(ACTIONS.SYNC_OUTPUT, ({ roomId, output }) => {
+    // Broadcasting the received output to all clients in the specified room
+    io.to(roomId).emit(ACTIONS.SYNC_OUTPUT, { output });
+    // Note: 'io.to(roomId)' targets all sockets in the specified room, including the sender
   });
 
   //agar client browser band ya kisi or page pe chala jata h to ye event trigger ho jata h

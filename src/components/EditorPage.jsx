@@ -11,8 +11,11 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
+import { handleCode } from "../helper";
 
 const EditorPage = () => {
+  const [syncedOutput, setSyncedOutput] = useState("");
+  const [output, setOutput] = useState(""); // Initialize with an appropriate default value
   const [clients, setClients] = useState([]);
   const codeRef = useRef(null);
   const socketRef = useRef(null); //we are using useRef because when its value change component didn't rerender
@@ -52,6 +55,11 @@ const EditorPage = () => {
             code: codeRef.current,
             socketId,
           });
+
+          // Inside the useEffect block
+          socketRef.current.on(ACTIONS.SYNC_OUTPUT, ({ output }) => {
+            setSyncedOutput(output);
+          });
         }
       );
 
@@ -72,6 +80,19 @@ const EditorPage = () => {
     };
   }, []);
 
+  const handleRunCode = async () => {
+    const codeOutput = await handleCode(codeRef.current);
+    // setOutput(codeOutput);
+
+    // Emit the output to the server for synchronization
+    socketRef.current.emit(ACTIONS.SYNC_OUTPUT, {
+      roomId,
+      output: codeOutput.output,
+    });
+  };
+
+  // console.log(output);
+
   async function copyRoomId() {
     try {
       await navigator.clipboard.writeText(roomId);
@@ -85,9 +106,8 @@ const EditorPage = () => {
   function leaveRoom() {
     reactNavigate("/");
   }
-
   return (
-    <div className="mainWrap bg-[#1c1e29] grid grid-cols-[250px_minmax(900px,_1fr)_0px] h-screen  	">
+    <div className="mainWrap bg-[#1c1e29] grid grid-cols-[250px_minmax(900px,1fr)300px]">
       <div className="aside bg-[#1c1e29] border-r-[1px] border-white flex flex-col">
         <div className="asideInner flex-1">
           <div className="logo border-b-2 boder-[#424242] ">
@@ -117,7 +137,7 @@ const EditorPage = () => {
           Leave
         </button>
       </div>
-      <div className="editorWrap  ">
+      <div className="">
         <Editor
           socketRef={socketRef}
           roomId={roomId}
@@ -125,6 +145,91 @@ const EditorPage = () => {
             codeRef.current = code;
           }}
         />
+      </div>
+      <div className="w-[100%] h-screen ">
+        <div className="flex">
+          <button
+            onClick={handleRunCode}
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5  mx-4 my-4  text-center  me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Run
+          </button>
+
+          <div className="mx-4 my-4 ">
+            <button
+              id="dropdownDefaultButton"
+              data-dropdown-toggle="dropdown"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              type="button"
+            >
+              Language{" "}
+              <svg
+                class="w-2.5 h-2.5 ms-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 4 4 4-4"
+                />
+              </svg>
+            </button>
+
+            {/* <!-- Dropdown menu --> */}
+            <div
+              id="dropdown"
+              class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+            >
+              <ul
+                class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                aria-labelledby="dropdownDefaultButton"
+              >
+                <li>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    Settings
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    Earnings
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    Sign out
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-white border-t-[1px]  border-white p-2 text-2xl">
+          Output
+          <p className="m-2">{syncedOutput}</p>
+        </div>
       </div>
     </div>
   );
