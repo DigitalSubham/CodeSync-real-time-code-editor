@@ -32,7 +32,7 @@ Welcome to the Realtime Code Editor! This web-based code editor allows users to 
 - **Backend:** Express
 - **Websockets:** Socket.IO
 - **Code Highlighting:** CodeMirror
-- **Code Compilation:** [Provide details about the API used for code compilation.]
+- **Code Compilation:** API
 
 ## Getting Started
 
@@ -45,7 +45,7 @@ Welcome to the Realtime Code Editor! This web-based code editor allows users to 
 1. Clone the repository.
    ```
    bash
-   git clone https://github.com/your-username/realtime-code-editor.git
+   git clone [https://github.com/DigitalSubham/CodeSync-real-time-code-editor]
    ```
 
 
@@ -65,9 +65,9 @@ npm start
 ### Future Features
 In the future, we plan to add the following features:
 
-Video Calling: Enable real-time video communication between users.
-Whiteboard: Collaborative whiteboard for diagramming and sketching ideas.
-Quiz Module: Add a quiz feature for interactive learning sessions.
+- Video Calling: Enable real-time video communication between users.
+- Whiteboard: Collaborative whiteboard for diagramming and sketching ideas.
+- Quiz Module: Add a quiz feature for interactive learning sessions.
 
 
 
