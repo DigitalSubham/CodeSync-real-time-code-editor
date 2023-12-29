@@ -2,18 +2,6 @@
 
 Welcome to the Realtime Code Editor! This web-based code editor allows users to collaboratively write and view code in real-time. Users can create rooms, share room IDs, and join existing rooms to code together seamlessly.
 
-## Table of Contents
-- [Features](#features)
-- [Demo](#demo)
-- [Technologies Used](#technologies-used)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Future Features](#future-features)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Features
 
 - **Real-time Collaboration:** Write and view code collaboratively in real-time with others.
@@ -24,21 +12,18 @@ Welcome to the Realtime Code Editor! This web-based code editor allows users to 
 
 ## Demo
 
-[Insert a link to a live demo or screenshots of your application in action.]
+ 
 
 ## Technologies Used
 
-- **Frontend:** ReactJs, Tailwind
+- **Frontend:** ReactJs
+- **Styling:** Tailwind CSS
 - **Backend:** Express
 - **Websockets:** Socket.IO
 - **Code Highlighting:** CodeMirror
 - **Code Compilation:** API
 
 ## Getting Started
-
-### Prerequisites
-
-- [List any dependencies or prerequisites users need to install before using your project.]
 
 ## Installation
 
