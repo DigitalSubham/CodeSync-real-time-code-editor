@@ -28,7 +28,7 @@ Welcome to the Realtime Code Editor! This web-based code editor allows users to 
 
 ## Technologies Used
 
-- **Frontend:** React
+- **Frontend:** ReactJs, Tailwind
 - **Backend:** Express
 - **Websockets:** Socket.IO
 - **Code Highlighting:** CodeMirror
