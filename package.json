@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "npm run build && npm run server:prod",
     "server:dev": "nodemon server.js",
     "server:prod": "node server.js",
     "build": "vite build",

@@ -3,12 +3,20 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import ACTIONS from "./src/Actions.js";
 import "dotenv/config";
+import path from "path";
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const app = express();
 const PORT = process.env.VITE_PORT || 4000;
 
 const server = createServer(app);
 const io = new Server(server);
+
+app.use(express.static("dist"));
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 function getAllConnectedClient(roomId) {
   // console.log(io.sockets.adapter.rooms.get(roomId) || []);
